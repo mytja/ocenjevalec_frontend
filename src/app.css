@@ -1,0 +1,67 @@
+body {
+  background-color: rgb(var(--m3-scheme-background));
+  color: rgb(var(--m3-scheme-on-background));
+  margin: 0;
+}
+
+.green {
+  background-color: darkgreen;
+}
+
+.yellow {
+  background-color: #8B8000;
+}
+
+.red {
+  background-color: red;
+}
+
+.purple {
+  background-color: mediumpurple;
+}
+
+.black {
+  background-color: black;
+}
+
+.grey {
+  background-color: gray;
+}
+
+.big-text {
+  font-size: 18px !important;
+  font-weight: bold;
+}
+
+.medium-text {
+  font-size: 15px !important;
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+table td {
+  text-align: center;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 5px;
+}
+
+table td {
+  font-size: 12px;
+  padding:10px 0;
+}
+th {
+  text-align: left;
+}
+
+.full-width > .m3-container {
+  width: 100%;
+}
