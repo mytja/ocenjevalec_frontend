@@ -37,9 +37,6 @@ devDependencies:
   vite:
     specifier: ^5.2.0
     version: 5.2.7
-  vite-plugin-filter-replace:
-    specifier: ^0.1.13
-    version: 0.1.13
 
 packages:
 
@@ -1099,10 +1096,6 @@ packages:
     resolution: {integrity: sha512-KrPd3PKaCLr78MalgiwJnA25Nm8HAmdwN3mYUYZgG/wizIo9EainNVQI9/yDavtVFRN2h3k8uf3GLHuhDMgEHg==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
-
-  /vite-plugin-filter-replace@0.1.13:
-    resolution: {integrity: sha512-ctYDU9cKxPAVbcXvVzFXyWJSg7yYDddyUmkgXDOWO65VWPuMPKMJfKckSH2jyb6NL2xQfxBP4q/5z4XS1QTuqg==}
     dev: true
 
   /vite@5.2.7:
