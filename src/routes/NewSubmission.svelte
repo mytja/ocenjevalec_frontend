@@ -10,6 +10,9 @@
     import {push} from 'svelte-spa-router'
     import {baseurl, production} from "../lib/consts";
     import type {HTMLInputAttributes} from "svelte/elements";
+    import {onMount} from "svelte";
+    import mermaid from "mermaid";
+    import {parseMermaid} from "../lib/mermaid-parser";
 
     let submission = "";
     let disabled = true;
@@ -25,6 +28,10 @@
     let teams: any[] = [];
 
     let numberExtraOptions: HTMLInputAttributes = {type: "number"};
+
+    onMount(() => {
+        mermaid.initialize({startOnLoad: false});
+    })
 
     async function testiraj() {
         let fd = new FormData();
@@ -103,6 +110,8 @@
 
     getProblems();
     getTeams();
+
+    $: parseMermaid(submission);
 </script>
 
 <h2>Nova oddaja</h2>
@@ -113,18 +122,33 @@
 
 <p/>
 
+<h4>Lokalna evaluacija sintaktične pravilnosti</h4>
+
+<small>Lokalna evaluacija ni obvezujoča, niti ni garantirano, da bo dala pravilen izhod za rešitev. Vse rešitve se testirajo na strežniku s pravilnim evaluatorjem (ki ni napisan v JavaScriptu). Strežnik je navadno bolj strog in ne bo pustil drugih sintaktičnih napak, ki so dovoljene v JavaScript implementaciji.</small>
+
+<p/>
+
+<div id="mermaid-outer" style="text-align: center;">
+    <div id="mermaid-dinfo"></div>
+    <div id="mermaid-d"></div>
+</div>
+
+<p/>
+
 Problem:
 
 <p/>
 
-<SegmentedButtonContainer>
-    {#each problems as p, i}
-        <input type="radio" on:click={async () => {
-                problemId = p.ID;
-            }} name="segmented-b-1" id="segmented-b-1-{i}" checked={problemId === p.ID} />
-        <SegmentedButtonItem input="segmented-b-1-{i}">{p.Name.replace("Problem", "Prob.")}</SegmentedButtonItem>
-    {/each}
-</SegmentedButtonContainer>
+{#if problems !== undefined && problems !== null}
+    <SegmentedButtonContainer>
+        {#each problems as p, i}
+            <input type="radio" on:click={async () => {
+                    problemId = p.ID;
+                }} name="segmented-b-1" id="segmented-b-1-{i}" checked={problemId === p.ID} />
+            <SegmentedButtonItem input="segmented-b-1-{i}">{p.Name.replace("Problem", "Prob.")}</SegmentedButtonItem>
+        {/each}
+    </SegmentedButtonContainer>
+{/if}
 
 <p/>
 
@@ -132,14 +156,16 @@ Ekipa:
 
 <p/>
 
-<SegmentedButtonContainer>
-    {#each teams as t, i}
-        <input type="radio" on:click={async () => {
-                teamId = t.ID;
-            }} name="segmented-b-2" id="segmented-b-2-{i}" checked={teamId === t.ID} />
-        <SegmentedButtonItem input="segmented-b-2-{i}">{t.Name}</SegmentedButtonItem>
-    {/each}
-</SegmentedButtonContainer>
+{#if teams !== undefined && teams !== null}
+    <SegmentedButtonContainer>
+        {#each teams as t, i}
+            <input type="radio" on:click={async () => {
+                    teamId = t.ID;
+                }} name="segmented-b-2" id="segmented-b-2-{i}" checked={teamId === t.ID} />
+            <SegmentedButtonItem input="segmented-b-2-{i}">{t.Name}</SegmentedButtonItem>
+        {/each}
+    </SegmentedButtonContainer>
+{/if}
 
 <p/>
 

@@ -5,6 +5,9 @@
     import iconDelete from "@ktibow/iconset-material-symbols/delete";
     import iconCheck from "@ktibow/iconset-material-symbols/check";
     import type {HTMLInputAttributes} from "svelte/elements";
+    import {onMount} from "svelte";
+    import mermaid from "mermaid";
+    import {parseMermaid} from "../lib/mermaid-parser";
 
     let name = "";
     let snackbar: (data: SnackbarIn) => void;
@@ -15,6 +18,10 @@
 
     let solution = "";
     let points = 1000;
+
+    onMount(() => {
+        mermaid.initialize({startOnLoad: false});
+    })
 
     async function fetchProblems() {
         let response: Response;
@@ -92,6 +99,8 @@
     }
 
     fetchProblems();
+
+    $: parseMermaid(solution);
 </script>
 
 <h2>Nov problem</h2>
@@ -109,16 +118,23 @@
 <p/>
 
 <div class="full-width">
-    <TextField bind:value={solution} name="Solution"></TextField>
+    <TextField bind:value={solution} name="Rešitev"></TextField>
 </div>
 
 <p/>
 
 <Button type="filled" on:click={newProblem}>Ustvari nov problem</Button>
 
+<p/>
+
+<div id="mermaid-outer" style="text-align: center;">
+    <div id="mermaid-dinfo"></div>
+    <div id="mermaid-d"></div>
+</div>
+
 <h2>Trenutni problemi</h2>
 
-{#if problems.length === 0}
+{#if problems === null || problems.length === 0}
     <i>Ničesar (še) ni tukaj :(</i>
 {:else}
     <table>
