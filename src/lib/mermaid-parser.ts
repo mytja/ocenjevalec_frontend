@@ -2,7 +2,8 @@ import mermaid from "mermaid";
 
 let code = "";
 
-async function parseMermaid(sol: String) {
+async function parseMermaid(sol: String, tag: String) {
+    console.log("mmaid", tag)
     let nsol = sol.toUpperCase().replaceAll(" ", "");
     code = "flowchart LR\n";
     try {
@@ -14,14 +15,14 @@ async function parseMermaid(sol: String) {
     }
     console.log("Rendering!", code)
     try {
-        const {svg} = await mermaid.render("mermaid-dinfo", code);
-        document.getElementById("mermaid-d").innerHTML = svg;
+        const {svg} = await mermaid.render(`mermaid-d${tag}info`, code);
+        document.getElementById(`mermaid-d${tag}`).innerHTML = svg;
         console.log("Done rendering!");
     } catch (e) {
         // hacky način za renderanje errorja
         console.log("Renderam error!", e)
-        let target = document.getElementById("mermaid-dinfo");
-        document.getElementById('mermaid-outer').appendChild(target);
+        let target = document.getElementById(`mermaid-d${tag}info`);
+        document.getElementById(`mermaid-outer${tag}`).appendChild(target);
         console.log("Error rendering končan!")
     }
 }

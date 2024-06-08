@@ -1,9 +1,7 @@
 <script lang="ts">
-    import {Button, Icon, SnackbarAnim, type SnackbarIn, TextField} from "m3-svelte";
+    import {Button, SnackbarAnim, type SnackbarIn, TextField} from "m3-svelte";
     import {push} from 'svelte-spa-router'
     import {baseurl, production} from "../lib/consts";
-    import iconDelete from "@ktibow/iconset-material-symbols/delete";
-    import iconCheck from "@ktibow/iconset-material-symbols/check";
     import type {HTMLInputAttributes} from "svelte/elements";
     import {onMount} from "svelte";
     import mermaid from "mermaid";
@@ -36,6 +34,14 @@
             return;
         }
         problems = (await response.json()).data;
+
+        if (problems === undefined || problems === null) return;
+
+        for (let i = 0; i < problems.length; i++) {
+            let c = problems[i];
+            if (c === undefined || c.ID === undefined) continue;
+            setTimeout(() => parseMermaid(c.Solution, c.ID), 100);
+        }
     }
 
     async function newProblem() {
@@ -100,7 +106,7 @@
 
     fetchProblems();
 
-    $: parseMermaid(solution);
+    $: parseMermaid(solution, "");
 </script>
 
 <h2>Nov problem</h2>
@@ -137,54 +143,38 @@
 {#if problems === null || problems.length === 0}
     <i>Ničesar (še) ni tukaj :(</i>
 {:else}
-    <table>
-        <thead>
-        <tr>
-            <th scope="col">Problem</th>
-            <th scope="col">Rešitev</th>
-            <th scope="col">Položaj</th>
-            <th scope="col">Točke</th>
-            <th scope="col">Shrani spremembe</th>
-            <th scope="col">Izbriši</th>
-        </tr>
-        </thead>
-        <tbody>
-        {#each problems as c}
-            <tr>
-                <th scope="row">
-                    <div class="full-width">
-                        <TextField bind:value={c.Name} name="Ime problema"></TextField>
-                    </div>
-                </th>
-                <th scope="row">
-                    <div class="full-width">
-                        <TextField bind:value={c.Solution} name="Rešitev problema"></TextField>
-                    </div>
-                </th>
-                <th scope="row">
-                    <div class="full-width">
-                        <TextField extraOptions={numberExtraOptions} bind:value={c.Position} name="Položaj"></TextField>
-                    </div>
-                </th>
-                <th scope="row">
-                    <div class="full-width">
-                        <TextField extraOptions={numberExtraOptions} bind:value={c.Points} name="Točke"></TextField>
-                    </div>
-                </th>
-                <td>
-                    <Button on:click={() => updateProblem(c.ID, c.Name, c.Points, c.Solution, c.Position)} type="elevated" iconType="full">
-                        <Icon icon={iconCheck} />
-                    </Button>
-                </td>
-                <td>
-                    <Button on:click={() => deleteProblem(c.ID)} type="elevated" iconType="full">
-                        <Icon icon={iconDelete} />
-                    </Button>
-                </td>
-            </tr>
-        {/each}
-        </tbody>
-    </table>
+    {#each problems as c}
+        <details>
+            <summary>{c.Name}</summary>
+            <h1>{c.Name}</h1>
+            <br>
+            <div class="full-width">
+                <TextField bind:value={c.Name} name="Ime problema"></TextField>
+            </div>
+            <div class="full-width">
+                <TextField bind:value={c.Solution} name="Rešitev problema"></TextField>
+            </div>
+            Arduino koda:
+            <p/>
+            <code>
+                bool logic = {c.Solution};
+            </code>
+            <div id="mermaid-outer{c.ID}" style="text-align: center;">
+                <div id="mermaid-d{c.ID}info"></div>
+                <div id="mermaid-d{c.ID}"></div>
+            </div>
+            <div class="full-width">
+                <TextField extraOptions={numberExtraOptions} bind:value={c.Position} name="Položaj"></TextField>
+            </div>
+            <div class="full-width">
+                <TextField extraOptions={numberExtraOptions} bind:value={c.Points} name="Točke"></TextField>
+            </div>
+            <p/>
+            <Button type="filled" on:click={() => updateProblem(c.ID, c.Name, c.Points, c.Solution, c.Position)}>Posodobi problem</Button>
+            <Button type="outlined" on:click={() => deleteProblem(c.ID)}>Izbriši problem</Button>
+        </details>
+        <p/>
+    {/each}
 {/if}
 
 <SnackbarAnim bind:show={snackbar} />

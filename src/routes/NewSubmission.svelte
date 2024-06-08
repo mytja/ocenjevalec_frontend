@@ -111,7 +111,7 @@
     getProblems();
     getTeams();
 
-    $: parseMermaid(submission);
+    $: parseMermaid(submission, "");
 </script>
 
 <h2>Nova oddaja</h2>
