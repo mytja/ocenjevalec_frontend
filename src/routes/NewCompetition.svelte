@@ -5,7 +5,7 @@
 
     let snackbar: (data: SnackbarIn) => void;
 
-    let penalty = 20;
+    let penalty = 1;
     let penalty_each = 15;
 
     async function newCompetition() {
@@ -41,11 +41,7 @@
 
 <p/>
 
-Zamik med kaznimi: <SliderTicks step={1} min={0} max={100} bind:value={penalty_each} />
-
-<p/>
-
-Nastavljeno imate kazen {penalty} točk vsakih {penalty_each} minut.
+Nastavljeno imate kazen {penalty} točk vsako minuto.
 
 <p/>
 
