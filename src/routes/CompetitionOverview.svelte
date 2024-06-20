@@ -11,6 +11,11 @@
 
     let recentSubmissions: any[] = [];
 
+    let showProblemPointCount = {
+        last: null,
+        show: false,
+    }
+
     async function fetchCompetition() {
         let response: Response;
         try {
@@ -31,6 +36,18 @@
             if (competition.Teams[i - 1].TotalScore !== competition.Teams[i].TotalScore) continue;
             competition.Teams[i].Position = competition.Teams[i - 1].Position;
         }
+        showProblemPointCount.show = false;
+        showProblemPointCount.last = null;
+        for (let i = 0; i < competition.Problems.length; i++) {
+            if (showProblemPointCount.last === null) {
+                showProblemPointCount.last = competition.Problems[i].Points;
+                continue;
+            }
+            if (competition.Problems[i].Points === showProblemPointCount.last) continue;
+            showProblemPointCount.show = true;
+            break;
+        }
+        showProblemPointCount = showProblemPointCount; // svelte heki
         establishWebsocketConnection();
     }
 
@@ -244,13 +261,17 @@
 
         <h3>Skupni seštevek</h3>
 
+        {#if !showProblemPointCount.show}
+            Vse naloge imajo določeno število točk {showProblemPointCount.last}.
+        {/if}
+
         <table>
             <thead>
             <tr>
                 <th scope="col">Mesto</th>
                 <th scope="col">Ekipa</th>
                 {#each competition.Problems as problem}
-                <th scope="col">{problem.Name} ({problem.Points})</th>
+                <th scope="col">{problem.Name} {#if showProblemPointCount.show}({problem.Points}){/if}</th>
                 {/each}
                 <th scope="col">Skupaj</th>
             </tr>
@@ -263,7 +284,7 @@
                     {#each team.Problems as problem, i}
                         {#if problem !== null}
                             {@const verdict = problem.LatestSubmission.Verdict}
-                            {@const score = `${problem.LatestSubmission.Score}/${competition.Problems[i].Points}`}
+                            {@const score = `${problem.LatestSubmission.Score}${showProblemPointCount.show ? '/' : ''}${showProblemPointCount.show ? competition.Problems[i].Points : ''}`}
                             {@const resubmissions = problem.SubmissionsBefore > 0 ? `(+${problem.SubmissionsBefore})` : ''}
                             {#if verdict === "AC" || verdict === "OK"}
                                 <td class="green"><span class="big-text upper"><a use:link={`/oddaja/${problem.LatestSubmission.ID}`}>{verdict}</a></span><br><span class="medium-text">{score} {resubmissions}</span></td>
