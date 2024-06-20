@@ -146,10 +146,11 @@ Problem:
                 {@const p = problems[i * 10 + l]}
                 <input type="radio" on:click={async () => {
                         problemId = p.ID;
-                    }} name="segmented-b-1" id="segmented-b-1-{l}" checked={problemId === p.ID} />
-                <SegmentedButtonItem input="segmented-b-1-{l}">{p.Name.replace("Problem", "Prob.")}</SegmentedButtonItem>
+                    }} name="segmented-b-p{i}" id="segmented-b-p{i}-{l}" checked={problemId === p.ID} />
+                <SegmentedButtonItem input="segmented-b-p{i}-{l}">{p.Name.replace("Problem", "Prob.")}</SegmentedButtonItem>
             {/each}
         </SegmentedButtonContainer>
+        <br>
     {/each}
 {/if}
 
