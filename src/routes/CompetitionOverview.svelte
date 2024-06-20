@@ -265,6 +265,8 @@
             Vse naloge imajo določeno število točk {showProblemPointCount.last}.
         {/if}
 
+        <p/>
+
         <table>
             <thead>
             <tr>
