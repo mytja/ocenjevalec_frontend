@@ -140,14 +140,17 @@ Problem:
 <p/>
 
 {#if problems !== undefined && problems !== null}
-    <SegmentedButtonContainer>
-        {#each problems as p, i}
-            <input type="radio" on:click={async () => {
-                    problemId = p.ID;
-                }} name="segmented-b-1" id="segmented-b-1-{i}" checked={problemId === p.ID} />
-            <SegmentedButtonItem input="segmented-b-1-{i}">{p.Name.replace("Problem", "Prob.")}</SegmentedButtonItem>
-        {/each}
-    </SegmentedButtonContainer>
+    {#each {length: Math.ceil(problems.length / 10)} as _, i}
+        <SegmentedButtonContainer>
+            {#each {length: (i + 1) * 10 <= problems.length ? 10 : problems.length - (i * 10)} as _, l}
+                {@const p = problems[i * 10 + l]}
+                <input type="radio" on:click={async () => {
+                        problemId = p.ID;
+                    }} name="segmented-b-1" id="segmented-b-1-{l}" checked={problemId === p.ID} />
+                <SegmentedButtonItem input="segmented-b-1-{l}">{p.Name.replace("Problem", "Prob.")}</SegmentedButtonItem>
+            {/each}
+        </SegmentedButtonContainer>
+    {/each}
 {/if}
 
 <p/>
