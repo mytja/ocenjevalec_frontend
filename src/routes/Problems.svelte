@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Button, SnackbarAnim, type SnackbarIn, TextField} from "m3-svelte";
+    import {Button, SnackbarAnim, type SnackbarIn, TextField, Switch} from "m3-svelte";
     import {push} from 'svelte-spa-router'
     import {baseurl, production} from "../lib/consts";
     import type {HTMLInputAttributes} from "svelte/elements";
@@ -16,6 +16,7 @@
 
     let solution = "";
     let points = 1000;
+    let baseOnly = false;
 
     onMount(() => {
         mermaid.initialize({startOnLoad: false});
@@ -49,6 +50,7 @@
         fd.append("name", name);
         fd.append("points", points.toString());
         fd.append("solution", solution);
+        fd.append("is_base_logic_only", baseOnly.toString());
 
         let response: Response;
         try {
@@ -79,12 +81,13 @@
         await fetchProblems();
     }
 
-    async function updateProblem(id: string, name: string, points: number, solution: string, position: number) {
+    async function updateProblem(id: string, name: string, points: number, solution: string, position: number, baseOnly: boolean) {
         let fd = new FormData();
         fd.append("name", name);
         fd.append("points", points.toString());
         fd.append("solution", solution);
         fd.append("position", position.toString());
+        fd.append("is_base_logic_only", baseOnly.toString());
 
         let response: Response;
         try {
@@ -129,6 +132,13 @@
 
 <p/>
 
+<label for={undefined}>
+    <Switch bind:checked={baseOnly} />
+    Dovoli samo osnovna logična vrata (AND, OR, NOT)
+</label>
+
+<p/>
+
 <Button type="filled" on:click={newProblem}>Ustvari nov problem</Button>
 
 <p/>
@@ -170,7 +180,12 @@
                 <TextField extraOptions={numberExtraOptions} bind:value={c.Points} name="Točke"></TextField>
             </div>
             <p/>
-            <Button type="filled" on:click={() => updateProblem(c.ID, c.Name, c.Points, c.Solution, c.Position)}>Posodobi problem</Button>
+            <label for={undefined}>
+                <Switch bind:checked={c.IsBaseLogicOnly} />
+                Dovoli samo osnovna logična vrata (AND, OR, NOT)
+            </label>
+            <p/>
+            <Button type="filled" on:click={() => updateProblem(c.ID, c.Name, c.Points, c.Solution, c.Position, c.IsBaseLogicOnly)}>Posodobi problem</Button>
             <Button type="outlined" on:click={() => deleteProblem(c.ID)}>Izbriši problem</Button>
         </details>
         <p/>
